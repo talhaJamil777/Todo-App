@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './component/style.css';
 import Header from './component/header';
 import TodoItem from './component/todoitem';
@@ -14,9 +14,28 @@ function App() {
     setInput('');
   };
 
-  const deleteTodo = (index) => {
-    setTodos(todos.filter((_, i) => i));
-  };
+    const deleteTodo = (index) => {
+      setTodos(todos.filter((_, i) => i));
+    };
+
+    //  useref input pe focus ky lie
+  const inputRef = useRef(null);
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+// use effect 
+  useEffect(() => {
+  const saved = JSON.parse(localStorage.getItem('todos')) || [];
+  setTodos(saved);
+}, []);
+
+useEffect(() => {
+  localStorage.setItem('todos', JSON.stringify(todos));
+}, [todos]);
+
+
+
   
 
   return (
@@ -27,6 +46,7 @@ function App() {
         placeholder="Add Todo"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        ref={inputRef}
       />
       <Button onClick={addTodo} />
       <ul>
