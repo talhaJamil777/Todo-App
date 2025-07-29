@@ -3,6 +3,7 @@ import './component/style.css';
 import Header from './component/header';
 import TodoItem from './component/todoitem';
 import Button from './component/button';
+import TodoContext from './component/TodoContext';
 
 function App() {
   const [todos, setTodos] = useState(['React', 'PHP', 'CSS']);
@@ -14,45 +15,45 @@ function App() {
     setInput('');
   };
 
-    const deleteTodo = (_index) => {
-      setTodos(todos.filter((_, i) => i));
-    };
+  const deleteTodo = (index) => {
+    setTodos(todos.filter((_, i) => i !== index));
+  };
 
-    //  useref input pe focus ky lie
   const inputRef = useRef(null);
   useEffect(() => {
     inputRef.current.focus();
   }, []);
 
-// use effect 
   useEffect(() => {
   const saved = JSON.parse(localStorage.getItem('todos')) || [];
   setTodos(saved);
-}, []);
+  }, []);
 
-useEffect(() => {
+  useEffect(() => {
   localStorage.setItem('todos', JSON.stringify(todos));
 }, [todos]);
 
 
 
   return (
-    <div className='todo-container'> 
-      <Header title='Todo App' />
-      <input
-        className="todo-input"
-        placeholder="Add Todo"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        ref={inputRef}
-      />
-      <Button onClick={addTodo} />
-      <ul>
-        {todos.map((todo, index) => (
-          <TodoItem key={index} text={todo} onDelete={() => deleteTodo(index)} />
-        ))}
-      </ul>
-    </div>
+    <TodoContext.Provider value={{ todos, setTodos, deleteTodo }}>
+      <div className='todo-container'>
+        <Header title='Todo App' />
+        <input
+          className="todo-input"
+          placeholder="Add Todo"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          ref={inputRef}
+        />
+        <Button onClick={addTodo} />
+        <ul>
+          {todos.map((todo, index) => (
+            <TodoItem key={index} text={todo} index={index} />
+          ))}
+        </ul>
+      </div>
+    </TodoContext.Provider>
   );
 }
 
