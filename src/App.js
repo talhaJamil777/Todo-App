@@ -14,7 +14,7 @@ function App() {
     setInput('');
   };
 
-    const deleteTodo = (index) => {
+    const deleteTodo = (_index) => {
       setTodos(todos.filter((_, i) => i));
     };
 
@@ -33,7 +33,6 @@ function App() {
 useEffect(() => {
   localStorage.setItem('todos', JSON.stringify(todos));
 }, [todos]);
-
 
 
 
